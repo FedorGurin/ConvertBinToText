@@ -5,13 +5,13 @@
 #-------------------------------------------------
 
 QT       += core gui xml
-
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 CONFIG += debug_and_release
-CONFIG += build_all
+CONFIG +=build_all
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-CONFIG(debug, debug|release):LIBS += "D:\MyProg\SwT_18_12_2018\SwT\binTools\reportViewQtVer1.1\dataParserToTxt\libParserMemDCSd.lib"
-CONFIG(release, debug|release):LIBS += "D:\MyProg\SwT_18_12_2018\SwT\binTools\reportViewQtVer1.1\dataParserToTxt\libParserMemDCS.lib"
+
+CONFIG(debug, debug|release):LIBS += "F:\MyProg\SwT\builds\build-dataparsertotxt\debug\libParserMemDCSd.lib"
+CONFIG(release, debug|release):LIBS += "F:\MyProg\SwT\builds\build-dataparsertotxt\release\libParserMemDCS.lib"
 
 TARGET = dataparsertotxt
 TEMPLATE = app

@@ -5,7 +5,6 @@
 #include <stdint.h>
 
 #include <QMessageBox>
-#include <QVector>
 
 namespace Ui {
 class dataparsertotxt;
@@ -31,21 +30,20 @@ public:
         double t0; //sec
     }recordheader;
 
-    QString curr_dir_bin;
-    QString curr_dir_xml;
-    QString path_result;
-
-    QStringList bin_files;
-    QStringList result_files;
+    QString name_newFile;
 
 private slots:
     void on_pushButton_open_bin_clicked();
 
     void on_pushButton_open_xml_clicked();
 
+    void on_pushButton_cancel_clicked();
+
+    void on_pushButton_preview_clicked();
+
     void on_pushButton_save_to_file_clicked();
 
-    void on_pushButton_path_result_clicked();
+    void on_lineEdit_result_textChanged(const QString &arg1);
 
 private:
     Ui::dataparsertotxt *ui;

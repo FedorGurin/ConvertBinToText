@@ -2,7 +2,5 @@
     <qresource prefix="/">
         <file alias="file_open">icons/file_open.png</file>
         <file alias="paste">icons/paste.png</file>
-        <file alias="circled_checkmark">icons/circled_checkmark.png</file>
-        <file alias="icon_question">icons/icon_question.png</file>
     </qresource>
 </RCC>
