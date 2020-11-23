@@ -6,6 +6,7 @@
 
 #include <QMessageBox>
 #include <QVector>
+#include "./mppm/IEngineData.h"
 
 namespace Ui {
 class dataparsertotxt;
@@ -23,12 +24,14 @@ public:
 
     struct Trecordheader
     {
+        //! идентификатор программный модуль
         uint32_t id_module;
         uint32_t id_object;
         uint32_t id_struct;
         uint32_t sizeOfStruct;
         float delta_t;
         double t0; //sec
+        char idName[80];
     }recordheader;
 
     QString curr_dir_bin;
@@ -38,10 +41,13 @@ public:
     QStringList bin_files;
     QStringList result_files;
 
+    //! указатель на движок с данными
+    IEngineData *engine;
+
 private slots:
     void on_pushButton_open_bin_clicked();
 
-    void on_pushButton_open_xml_clicked();
+
 
     void on_pushButton_save_to_file_clicked();
 

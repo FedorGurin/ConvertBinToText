@@ -4,15 +4,15 @@
 #
 #-------------------------------------------------
 
-QT       += core gui xml
+QT       += core gui thread
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 CONFIG += debug_and_release
 CONFIG += build_all
 
 
-CONFIG(debug, debug|release):LIBS += "libParserMemDCSd.lib"
-CONFIG(release, debug|release):LIBS += "libParserMemDCS.lib"
+#CONFIG(debug, debug|release):LIBS += "libParserMemDCSd.lib"
+#CONFIG(release, debug|release):LIBS += "libParserMemDCS.lib"
 
 TARGET = dataparsertotxt
 TEMPLATE = app
@@ -24,8 +24,11 @@ SOURCES += main.cpp\
 HEADERS  += dataparsertotxt.h \
     node.h \
     parameter.h \
-    parserMemDCS.h \
-    structure.h
+    structure.h \
+    mppm/IEngineData.h \
+    mppm/libmppm.h \
+    mppm/libmppm_global.h \
+    mppm/libmppmSpec.h
 
 FORMS    += dataparsertotxt.ui
 

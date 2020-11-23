@@ -2,8 +2,17 @@
 #include "ui_dataparsertotxt.h"
 #include <QFileDialog>
 #include <QFile>
-#include "parserMemDCS.h"
+//#include "parserMemDCS.h"
 #include <QTextStream>
+#include <QLibrary>
+
+#include "./mppm/IEngineData.h"
+#include "./mppm/libmppmSpec.h"
+
+typedef IEngineData* (*CreateEngine)();
+typedef Node* (*FindNode)(IEngineData* , QString idName);
+
+FindNode fNode;
 
 dataparsertotxt::dataparsertotxt(QWidget *parent) :
     QMainWindow(parent),
@@ -16,8 +25,8 @@ dataparsertotxt::dataparsertotxt(QWidget *parent) :
 
     ui->pushButton_open_bin->setIcon(QIcon(":/file_open"));
     ui->pushButton_open_bin->setToolTip(QString("Открыть..."));
-    ui->pushButton_open_xml->setIcon(QIcon(":/file_open"));
-    ui->pushButton_open_xml->setToolTip(QString("Открыть..."));
+    //ui->pushButton_open_xml->setIcon(QIcon(":/file_open"));
+    //ui->pushButton_open_xml->setToolTip(QString("Открыть..."));
     ui->pushButton_path_result->setIcon(QIcon(":/file_open"));
     resize(493, 100);
 
@@ -25,7 +34,26 @@ dataparsertotxt::dataparsertotxt(QWidget *parent) :
 
 //    setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed));
 
-    initXmlSerialLib();
+
+#ifdef QT_DEBUG
+    QLibrary libMPPM("libmppmd");
+#else
+    QLibrary libMPPM("libmppm");
+#endif
+
+    CreateEngine func = reinterpret_cast<CreateEngine > (libMPPM.resolve("createEngineSpec"));
+    fNode = reinterpret_cast<FindNode > (libMPPM.resolve("findNode"));
+    if(func == nullptr)
+    {
+        QMessageBox::warning(this, tr("Внимание!"),
+                             tr("libMPPM: (CreateEngine)libMPPM.resolve(\"createEngine\") = 0. \n"
+                                "Библиотека libMPPM не подключена/не загружена"),
+                             QMessageBox::Ok);
+
+    }
+    engine = static_cast<IEngineData*> (func());
+
+    //initXmlSerialLib();
 
     path_result = curr_dir_bin = curr_dir_xml = QString(QApplication::applicationDirPath());
     ui->lineEdit_path_result->setText(path_result);
@@ -70,28 +98,11 @@ void dataparsertotxt::on_pushButton_open_bin_clicked()
     }
 }
 
-void dataparsertotxt::on_pushButton_open_xml_clicked()
-{
-    QString file = QFileDialog::getOpenFileName(
-                            this,
-                            "Выберите файл...",
-                            curr_dir_xml,
-                            "XML files (*.xml)");
-    if(!file.isEmpty())
-    {
-        ui->lineEdit_path_xml->setText(file);
-//        curr_dir = file;
-        QString str;
-        str.clear();
-        for(int i = 0; i < file.lastIndexOf(QString("/")); i++)
-            str += file.at(i);
-        curr_dir_xml = str;
-    }
-}
+
 
 void dataparsertotxt::on_pushButton_save_to_file_clicked()
 {
-    if(ui->lineEdit_path_xml->text().isEmpty() || ui->lineEdit_path_bin->text().isEmpty())
+    if(ui->lineEdit_path_bin->text().isEmpty())
     {
         QMessageBox msgBox;
         msgBox.setWindowIcon(QIcon(":/paste"));
@@ -101,17 +112,8 @@ void dataparsertotxt::on_pushButton_save_to_file_clicked()
     }
     else
     {
-        QFile file_xml(ui->lineEdit_path_xml->text());
-        if(!file_xml.exists())
-        {
-            QMessageBox msgBox;
-            msgBox.setWindowIcon(QIcon(":/paste"));
-            msgBox.setIcon(QMessageBox::Warning);
-            msgBox.setText("Указан некорректный файл с описанием структуры.");
-            msgBox.exec();
-        }
-        else
-        {
+
+
             for(int i = 0; i < result_files.size(); i++)
             {
                 QFile binfile(bin_files.at(i));
@@ -163,7 +165,7 @@ void dataparsertotxt::on_pushButton_save_to_file_clicked()
                 txtfile.open(QIODevice::WriteOnly);
                 txtfile.close();
                 //разбор .xml
-                Node* node = loadFileXmlSerialLib(ui->lineEdit_path_xml->text());
+                //Node* node =fNode(engine,"tk");//loadFileXmlSerialLib(ui->lineEdit_path_xml->text());
 
                 //Запись в текстовый файл
                 if(binfile.open(QIODevice::ReadOnly))
@@ -171,14 +173,15 @@ void dataparsertotxt::on_pushButton_save_to_file_clicked()
                     //считывание заголовка
                     QDataStream in(&binfile);
                     in >> recordheader.id_module >> recordheader.id_object >> recordheader.id_struct
-                            >> recordheader.t0 >> recordheader.delta_t >> recordheader.sizeOfStruct;
+                            >> recordheader.t0 >> recordheader.delta_t >> recordheader.sizeOfStruct ;
+                    in.readRawData(recordheader.idName,sizeof(recordheader.idName));
 
 
                     QTextStream out(&txtfile);
                     out << QString("Time;");
                     QStringList listTitle;
                     QStringList listMes;
-                    convertTitleTreeToStrings(node, listTitle, listMes);
+                    //convertTitleTreeToStrings(node, listTitle, listMes);
                     for(int i = 0; i < listTitle.size(); i++)
                     {
                         //считваем размерность
@@ -198,8 +201,8 @@ void dataparsertotxt::on_pushButton_save_to_file_clicked()
                         while (!binfile.atEnd())
                         {
                             in >> ba;
-                            cpyMemToTreeSerialLib(node, &ba);
-                            QStringList list = convertValueTreeToStrings(node);
+                            //cpyMemToTreeSerialLib(node, &ba);
+                            QStringList list;// = convertValueTreeToStrings(node);
                             out << recordheader.t0+inc*recordheader.delta_t << QString(";");
                             for(int i = 0; i < list.size(); i++)
                             {
@@ -214,7 +217,7 @@ void dataparsertotxt::on_pushButton_save_to_file_clicked()
                     ui->statusBar->showMessage(QString("Создан файл "+txtfile.fileName()));
                 }
             }
-        }
+
     }
 }
 
