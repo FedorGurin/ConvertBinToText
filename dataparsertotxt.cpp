@@ -36,9 +36,9 @@ dataparsertotxt::dataparsertotxt(QWidget *parent) :
 
 
 #ifdef QT_DEBUG
-    QLibrary libMPPM("libmppmd");
+    QLibrary libMPPM("./libmppmd");
 #else
-    QLibrary libMPPM("libmppm");
+    QLibrary libMPPM("./libmppm");
 #endif
 
     CreateEngine func = reinterpret_cast<CreateEngine > (libMPPM.resolve("createEngineSpec"));

@@ -2,7 +2,7 @@
 #define LIBMPPMSPEC_H
 
 #include "libmppm_global.h"
-#include "IEngineData.h".h"
+#include "IEngineData.h"
 #include "parameter.h"
 #include <QList>
 

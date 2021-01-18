@@ -4,11 +4,10 @@
 #
 #-------------------------------------------------
 
-QT       += core gui thread
-
+QT       += core gui xml
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
-CONFIG += debug_and_release
-CONFIG += build_all
+CONFIG += debug thread c++11
+#CONFIG += build_all
 
 
 #CONFIG(debug, debug|release):LIBS += "libParserMemDCSd.lib"
