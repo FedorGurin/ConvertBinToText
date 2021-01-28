@@ -10,8 +10,8 @@ CONFIG +=build_all
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 
-CONFIG(debug, debug|release):LIBS += "F:\MyProg\SwT\builds\build-dataparsertotxt\debug\libParserMemDCSd.lib"
-CONFIG(release, debug|release):LIBS += "F:\MyProg\SwT\builds\build-dataparsertotxt\release\libParserMemDCS.lib"
+CONFIG(debug, debug|release):LIBS += "D:\MyProg\226\ui\ConvertBinToText\libParserMemDCSd.lib"
+CONFIG(release, debug|release):LIBS += "D:\MyProg\226\ui\ConvertBinToText\libParserMemDCS.lib"
 
 TARGET = dataparsertotxt
 TEMPLATE = app
