@@ -4,14 +4,18 @@
 #
 #-------------------------------------------------
 
-QT       += core gui xml
+TEMPLATE = app
+CONFIG += qt thread
+CONFIG += debug_and_release c++11
+
+
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets xml
 CONFIG += debug_and_release
-CONFIG +=build_all
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+CONFIG += build_all
 
 
-CONFIG(debug, debug|release):LIBS += "D:\MyProg\226\ui\ConvertBinToText\libParserMemDCSd.lib"
-CONFIG(release, debug|release):LIBS += "D:\MyProg\226\ui\ConvertBinToText\libParserMemDCS.lib"
+CONFIG(debug, debug|release):LIBS += "libparserMemDCSd.a"
+CONFIG(release, debug|release):LIBS += "libparserMemDCS.a"
 
 TARGET = dataparsertotxt
 TEMPLATE = app
@@ -23,8 +27,11 @@ SOURCES += main.cpp\
 HEADERS  += dataparsertotxt.h \
     node.h \
     parameter.h \
-    parserMemDCS.h \
-    structure.h
+    structure.h \
+    mppm/IEngineData.h \
+    mppm/libmppm.h \
+    mppm/libmppm_global.h \
+    mppm/libmppmSpec.h
 
 FORMS    += dataparsertotxt.ui
 
