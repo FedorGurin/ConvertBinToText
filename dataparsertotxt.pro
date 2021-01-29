@@ -14,8 +14,8 @@ CONFIG += debug_and_release
 CONFIG += build_all
 
 
-CONFIG(debug, debug|release):LIBS += "libparserMemDCSd.a"
-CONFIG(release, debug|release):LIBS += "libparserMemDCS.a"
+CONFIG(debug, debug|release):LIBS += "D:\MyProg\226\ui\ConvertBinToText\libParserMemDCSd.lib"
+CONFIG(release, debug|release):LIBS += "D:\MyProg\226\ui\ConvertBinToText\libParserMemDCS.lib"
 
 TARGET = dataparsertotxt
 TEMPLATE = app

@@ -28,6 +28,7 @@ public:
         uint32_t sizeOfStruct;
         float delta_t;
         double t0; //sec
+        char idName[80];
     }recordheader;
 
     QString name_newFile;

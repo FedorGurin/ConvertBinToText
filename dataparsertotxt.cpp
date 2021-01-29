@@ -113,10 +113,13 @@ void dataparsertotxt::on_pushButton_save_to_file_clicked()
             QFile binfile(ui->lineEdit_path_bin->text());
             if(binfile.open(QIODevice::ReadOnly))
             {
-                //считывание заголовка
-                QDataStream in(&binfile);
-                in >> recordheader.id_module >> recordheader.id_object >> recordheader.id_struct
-                        >> recordheader.t0 >> recordheader.delta_t >> recordheader.sizeOfStruct;
+                quint16 value;
+                                  quint8 val8;
+                                  //считывание заголовка
+                                  QDataStream in(&binfile);
+                                  in >> recordheader.id_module >> recordheader.id_object >> recordheader.id_struct
+                                          >> recordheader.t0 >> recordheader.delta_t >> recordheader.sizeOfStruct >>value >>val8>>val8;
+                                  in.readRawData(recordheader.idName,sizeof(recordheader.idName));
 
 
                 if(!name_newFile.contains(".txt"))
