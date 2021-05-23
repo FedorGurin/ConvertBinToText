@@ -14,8 +14,8 @@ CONFIG += debug_and_release
 CONFIG += build_all
 
 
-CONFIG(debug, debug|release):LIBS += "D:\MyProg\226\ui\ConvertBinToText\libParserMemDCSd.lib"
-CONFIG(release, debug|release):LIBS += "D:\MyProg\226\ui\ConvertBinToText\libParserMemDCS.lib"
+#CONFIG(debug, debug|release):LIBS += "D:\MyProg\226\ui\ConvertBinToText\libParserMemDCSd.lib"
+#CONFIG(release, debug|release):LIBS += "D:\MyProg\226\ui\ConvertBinToText\libParserMemDCS.lib"
 
 TARGET = dataparsertotxt
 TEMPLATE = app
@@ -25,9 +25,6 @@ SOURCES += main.cpp\
         dataparsertotxt.cpp
 
 HEADERS  += dataparsertotxt.h \
-    node.h \
-    parameter.h \
-    structure.h \
     mppm/IEngineData.h \
     mppm/libmppm.h \
     mppm/libmppm_global.h \

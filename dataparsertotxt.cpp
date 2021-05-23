@@ -2,8 +2,21 @@
 #include "ui_dataparsertotxt.h"
 #include <QFileDialog>
 #include <QFile>
-#include "parserMemDCS.h"
 #include <QTextStream>
+#include <QLibrary>
+
+#include "./mppm/libmppm.h"
+#include "./mppm/node.h"
+#include "./mppm/libmppmSpec.h"
+
+typedef IEngineData* (*CreateEngine)();
+typedef void (*CpyMemToTreeSerialLib)(IEngineData* e,Node* toNode, QByteArray *fromMem);
+typedef void (*ConvertValueTreeToStrings)(Node* root, QStringList &list);
+typedef void (*ConvertTitleTreeToStrings)(Node* root,QStringList &listName,QStringList &listMes);
+
+CpyMemToTreeSerialLib cpyMemToTree;
+ConvertValueTreeToStrings convValToStrings;
+ConvertTitleTreeToStrings convTitleToStrings;
 
 dataparsertotxt::dataparsertotxt(QWidget *parent) :
     QMainWindow(parent),
@@ -26,9 +39,30 @@ dataparsertotxt::dataparsertotxt(QWidget *parent) :
     name_newFile = QString("result");
     ui->lineEdit_result->setText(name_newFile);
 
+#ifdef QT_DEBUG
+    QLibrary libMPPM("libmppmd");
+#else
+    QLibrary libMPPM("libmppm");
+#endif
+
+    CreateEngine func = reinterpret_cast<CreateEngine > (libMPPM.resolve("createEngine"));
+    if(func == nullptr)
+    {
+        QMessageBox::warning(this, tr("Внимание!"),
+                             tr("libMPPM: (CreateEngine)libMPPM.resolve(\"createEngine\") = 0. \n"
+                                "Библиотека libMPPM не подключена/не загружена"),
+                             QMessageBox::Ok);
+
+    }
+    engine = func();
+    cpyMemToTree = reinterpret_cast<CpyMemToTreeSerialLib > (libMPPM.resolve("cpyMemToTreeSerialLib"));
+    convValToStrings = reinterpret_cast<ConvertValueTreeToStrings > (libMPPM.resolve("convertValueTreeToStrings"));
+    convTitleToStrings = reinterpret_cast<ConvertTitleTreeToStrings > (libMPPM.resolve("convertTitleTreeToStrings"));
+
+
 //    setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed));
 
-    initXmlSerialLib();
+
 }
 
 dataparsertotxt::~dataparsertotxt()

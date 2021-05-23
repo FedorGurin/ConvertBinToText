@@ -5,7 +5,7 @@
 #include <stdint.h>
 
 #include <QMessageBox>
-
+#include "./mppm/IEngineData.h"
 namespace Ui {
 class dataparsertotxt;
 }
@@ -33,6 +33,8 @@ public:
 
     QString name_newFile;
 
+    //! указатель на движок с данными
+    IEngineData *engine;
 private slots:
     void on_pushButton_open_bin_clicked();
 
