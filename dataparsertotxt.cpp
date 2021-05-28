@@ -10,6 +10,7 @@
 #include "./mppm/libmppmSpec.h"
 
 typedef IEngineData* (*CreateEngine)();
+typedef Node* (*FindNode)(IEngineData* , QString idName);
 typedef void (*CpyMemToTreeSerialLib)(IEngineData* e,Node* toNode, QByteArray *fromMem);
 typedef void (*ConvertValueTreeToStrings)(Node* root, QStringList &list);
 typedef void (*ConvertTitleTreeToStrings)(Node* root,QStringList &listName,QStringList &listMes);
@@ -17,6 +18,7 @@ typedef void (*ConvertTitleTreeToStrings)(Node* root,QStringList &listName,QStri
 CpyMemToTreeSerialLib cpyMemToTree;
 ConvertValueTreeToStrings convValToStrings;
 ConvertTitleTreeToStrings convTitleToStrings;
+FindNode   findNodeByIdName;
 
 dataparsertotxt::dataparsertotxt(QWidget *parent) :
     QMainWindow(parent),
@@ -40,9 +42,9 @@ dataparsertotxt::dataparsertotxt(QWidget *parent) :
     ui->lineEdit_result->setText(name_newFile);
 
 #ifdef QT_DEBUG
-    QLibrary libMPPM("libmppmd");
+    QLibrary libMPPM("./libmppmd");
 #else
-    QLibrary libMPPM("libmppm");
+    QLibrary libMPPM("./libmppm");
 #endif
 
     CreateEngine func = reinterpret_cast<CreateEngine > (libMPPM.resolve("createEngine"));
@@ -58,6 +60,7 @@ dataparsertotxt::dataparsertotxt(QWidget *parent) :
     cpyMemToTree = reinterpret_cast<CpyMemToTreeSerialLib > (libMPPM.resolve("cpyMemToTreeSerialLib"));
     convValToStrings = reinterpret_cast<ConvertValueTreeToStrings > (libMPPM.resolve("convertValueTreeToStrings"));
     convTitleToStrings = reinterpret_cast<ConvertTitleTreeToStrings > (libMPPM.resolve("convertTitleTreeToStrings"));
+    findNodeByIdName = reinterpret_cast<FindNode > (libMPPM.resolve("findNode"));
 
 
 //    setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed));
@@ -141,7 +144,7 @@ void dataparsertotxt::on_pushButton_save_to_file_clicked()
         else
         {
             //разбор .xml
-            Node* node = loadFileXmlSerialLib(ui->lineEdit_path_xml->text());
+            Node* node = nullptr;//= loadFileXmlSerialLib(ui->lineEdit_path_xml->text());
 
             //Запись в текстовый файл
             QFile binfile(ui->lineEdit_path_bin->text());
@@ -155,6 +158,8 @@ void dataparsertotxt::on_pushButton_save_to_file_clicked()
                                           >> recordheader.t0 >> recordheader.delta_t >> recordheader.sizeOfStruct >>value >>val8>>val8;
                                   in.readRawData(recordheader.idName,sizeof(recordheader.idName));
 
+
+                node = findNodeByIdName(engine,QString(recordheader.idName));
 
                 if(!name_newFile.contains(".txt"))
                     name_newFile = name_newFile + ".txt";
@@ -171,7 +176,7 @@ void dataparsertotxt::on_pushButton_save_to_file_clicked()
                 out << QString("Time;");
                 QStringList listTitle;
                 QStringList listMes;
-                convertTitleTreeToStrings(node, listTitle, listMes);
+                convTitleToStrings(node, listTitle, listMes);
                 for(int i = 0; i < listTitle.size(); i++)
                 {
                     //считваем размерность
@@ -192,8 +197,9 @@ void dataparsertotxt::on_pushButton_save_to_file_clicked()
                     while (!binfile.atEnd())
                     {
                         in >> ba;
-                        cpyMemToTreeSerialLib(node, &ba);
-                        QStringList list = convertValueTreeToStrings(node);
+                        cpyMemToTree(engine,node, &ba);
+                        QStringList list;
+                        convValToStrings(node,list);
                         out << recordheader.t0+inc*recordheader.delta_t << QString(";");
                         for(int i = 0; i < list.size(); i++)
                         {

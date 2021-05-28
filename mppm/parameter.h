@@ -4,7 +4,7 @@
 #define PARAMETER_H_
 
 
-#include "GenericNode.h"
+#include "genericNode.h"
 #include <QVariant>
 #include <QAbstractItemModel>
 #include <stdint.h>
