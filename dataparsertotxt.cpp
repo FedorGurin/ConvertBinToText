@@ -57,15 +57,10 @@ dataparsertotxt::dataparsertotxt(QWidget *parent) :
 
     }
     engine = func();
-    cpyMemToTree = reinterpret_cast<CpyMemToTreeSerialLib > (libMPPM.resolve("cpyMemToTreeSerialLib"));
-    convValToStrings = reinterpret_cast<ConvertValueTreeToStrings > (libMPPM.resolve("convertValueTreeToStrings"));
-    convTitleToStrings = reinterpret_cast<ConvertTitleTreeToStrings > (libMPPM.resolve("convertTitleTreeToStrings"));
-    findNodeByIdName = reinterpret_cast<FindNode > (libMPPM.resolve("findNode"));
-
-
-//    setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed));
-
-
+    cpyMemToTree        = reinterpret_cast<CpyMemToTreeSerialLib > (libMPPM.resolve("cpyMemToTreeSerialLib"));
+    convValToStrings    = reinterpret_cast<ConvertValueTreeToStrings > (libMPPM.resolve("convertValueTreeToStrings"));
+    convTitleToStrings  = reinterpret_cast<ConvertTitleTreeToStrings > (libMPPM.resolve("convertTitleTreeToStrings"));
+    findNodeByIdName    = reinterpret_cast<FindNode > (libMPPM.resolve("findNode"));
 }
 
 dataparsertotxt::~dataparsertotxt()
