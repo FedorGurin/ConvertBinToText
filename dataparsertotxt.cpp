@@ -195,9 +195,11 @@ void dataparsertotxt::on_pushButton_save_to_file_clicked()
                     ba.resize(recordheader.sizeOfStruct);
                     //считывания блока памяти
                     int inc = 0;
+
                     while (!binfile.atEnd())
                     {
-                        in >> ba;
+                        in.readRawData(ba.data(),ba.size());
+
                         cpyMemToTree(engine,node, &ba);
                         QStringList list;
                         convValToStrings(node,list);
