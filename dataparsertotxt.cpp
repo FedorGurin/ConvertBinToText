@@ -32,8 +32,7 @@ dataparsertotxt::dataparsertotxt(QWidget *parent) :
     ui->textEdit->setVisible(false);
     ui->pushButton_open_bin->setIcon(QIcon(":/file_open"));
     ui->pushButton_open_bin->setToolTip(QString("Открыть..."));
-    ui->pushButton_open_xml->setIcon(QIcon(":/file_open"));
-    ui->pushButton_open_xml->setToolTip(QString("Открыть..."));
+
     resize(493, 100);
 
     ui->pushButton_preview->setVisible(false);
@@ -87,8 +86,7 @@ void dataparsertotxt::on_pushButton_open_xml_clicked()
                             "Выберите файл...",
                             QApplication::applicationDirPath(),
                             "XML files (*.xml)");
-    if(!files.isEmpty())
-        ui->lineEdit_path_xml->setText(files.at(0));
+
 }
 
 void dataparsertotxt::on_pushButton_cancel_clicked()
@@ -98,7 +96,7 @@ void dataparsertotxt::on_pushButton_cancel_clicked()
 
 void dataparsertotxt::on_pushButton_preview_clicked()
 {
-    if(!ui->lineEdit_path_xml->text().isEmpty() && !ui->lineEdit_path_bin->text().isEmpty())
+    if(!ui->lineEdit_path_bin->text().isEmpty())
     {
         ui->textEdit->setVisible(true);
     }
@@ -106,7 +104,7 @@ void dataparsertotxt::on_pushButton_preview_clicked()
 
 void dataparsertotxt::on_pushButton_save_to_file_clicked()
 {
-    if(ui->lineEdit_path_xml->text().isEmpty() || ui->lineEdit_path_bin->text().isEmpty())
+    if( ui->lineEdit_path_bin->text().isEmpty())
     {
         QMessageBox msgBox;
         msgBox.setIcon(QMessageBox::Warning);
@@ -122,15 +120,13 @@ void dataparsertotxt::on_pushButton_save_to_file_clicked()
     }
     else
     {
-        QFile file_xml(ui->lineEdit_path_xml->text());
+
         QFile binfile(ui->lineEdit_path_bin->text());
-        if(!file_xml.exists() || !binfile.exists())
+        if(!binfile.exists())
         {
             QMessageBox msgBox;
             msgBox.setIcon(QMessageBox::Warning);
-            if(file_xml.exists())
-                msgBox.setText("Указан некорректный файл данных.");
-            else if(binfile.exists())
+            if(binfile.exists())
                 msgBox.setText("Указан некорректный файл со структурой данных.");
             else
                 msgBox.setText("Указаны некорректные файлы.");
