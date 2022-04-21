@@ -147,13 +147,20 @@ void dataparsertotxt::on_pushButton_save_to_file_clicked()
             {
                 //считывание заголовка
                 QDataStream in(&binfile);
-                /*in >> recordheader.id_module >> recordheader.id_object >> recordheader.id_struct
-                        >> recordheader.t0 >> recordheader.delta_t >> recordheader.sizeOfStruct ;//>>value >>val8>>val8;*/
+                in.setByteOrder(QDataStream::LittleEndian);
+                in >> recordheader.id_module
+                   >> recordheader.id_object
+                   >> recordheader.id_struct
+                   >> recordheader.t0
+                   >> recordheader.delta_t
+                   >> recordheader.sizeOfStruct ;
 
                 in.readRawData(recordheader.idName,sizeof(recordheader.idName));
 
 
-                node = findNodeByIdName(engine,QString(recordheader.idName));
+                QString nameNode = recordheader.idName;
+
+                node = findNodeByIdName(engine, nameNode.replace("_","."));
 
                 if(!name_newFile.contains(".txt"))
                     name_newFile = name_newFile + ".txt";

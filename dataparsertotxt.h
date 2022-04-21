@@ -26,7 +26,9 @@ public:
         uint32_t id_object;
         uint32_t id_struct;
         uint32_t sizeOfStruct;
-        float delta_t;
+        //! циклический
+        uint8_t cyclic;
+        double delta_t;
         double t0; //sec
         char idName[80];
     }recordheader;
